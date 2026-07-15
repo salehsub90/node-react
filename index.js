@@ -2,11 +2,16 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cookieSession = require('cookie-session');
 const passport = require('passport');
-const keys = require('./config/keys') || true;
 require('./models/User');
 require('./services/passport');
 
-const db = process.env.MONGO_URI || keys.mongoURI;
+let db;
+try {
+    const keys = require('./config/keys');
+    db = keys.mongoURI;
+} catch (error) {
+    db = process.env.MONGO_URI;
+}
 
 mongoose.connect(db);
 
