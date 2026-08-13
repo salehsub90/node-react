@@ -22,27 +22,24 @@ passport.use(
     clientSecret: keys.googleClientSecret,
     callbackURL: '/auth/google/callback',
     proxy: true
-  }, (accessToken, refreshToken, profile, done) => {
+  }, 
+  async (accessToken, refreshToken, profile, done) => {
     // Strategy implementation
     // console.log('Access Token:', accessToken);
     // console.log('Refresh Token:', refreshToken);
     console.log('Profile:', profile);
 
     // initiate a query asynchronously to find a user with the given googleId in the database
-    User.findOne({ googleId: profile.id })
-    .then((existingUser) => {
-      if (existingUser) {
+    const existingUser = await User.findOne({ googleId: profile.id });
+    if (existingUser) {
         // we already have a record with the given profile ID
         console.log('User already exists:', existingUser);
         done(null, existingUser);
-      } else {
+    } else {
         // we don't have a user record with this ID, make a new record
-        new User({ googleId: profile.id }).save()
-          .then(user => {
-            console.log('New user created:', user);
-            done(null, user);
-          });
-      }
-    })
+      const user = await new User({ googleId: profile.id }).save();
+      console.log('New user created:', user);
+      done(null, user);
+    }
   })
 );
