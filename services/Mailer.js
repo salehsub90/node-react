@@ -7,7 +7,18 @@ class Mailer extends helper.Mail {
     constructor({ subject, recipients }, content){
         // any constructor defined on the mail class gets executed by calling super
         super();
-        this.from_email = new helper.Email('')
+        this.from_email = new helper.Email('no-reply@emaily.com');
+        this.subject = subject;
+        this.body = helper.Content('text/html', content);
+        this.recipients = this.formatAddresses(recipients);
+
+        this.addContent(this.body);
+    }
+
+    formatAddresses(recipients) {
+        return recipients.map(({ email }) => {
+            return new helper.Email(email);
+        });
     }
 }
 
