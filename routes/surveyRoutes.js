@@ -27,5 +27,13 @@ module.exports = app => {
         // Calling the constructor
         const mailer = new Mailer(survey, surveyTemplate(survey));
 
+        //mailer.send();
+        try {
+            mailer.send();
+            //res.send(survey);
+        } catch (err) {
+            console.error(err);
+            res.status(422).send(err);
+        }
     });
 }
